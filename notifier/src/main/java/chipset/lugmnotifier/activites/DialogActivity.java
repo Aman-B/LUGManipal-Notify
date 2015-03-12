@@ -1,0 +1,49 @@
+package chipset.lugmnotifier.activites;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
+
+import chipset.lugmnotifier.R;
+import chipset.lugmnotifier.fragments.AboutFragment;
+import chipset.lugmnotifier.fragments.DetailFragement;
+import chipset.lugmnotifier.fragments.LoginFragment;
+
+/**
+ * Developer: chipset
+ * Package : chipset.lugmnotifier.activites
+ * Project : LUGMNotifier
+ * Date : 24/12/14
+ */
+public class DialogActivity extends ActionBarActivity {
+    Fragment fragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dialog);
+        int f = getIntent().getIntExtra("Fragment", 1);
+        switch (f) {
+            case 0: {
+                fragment = new LoginFragment();
+                break;
+            }
+            case 1:
+            default: {
+                fragment = new AboutFragment();
+                break;
+            }
+            case 2: {
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("DATA", getIntent().getStringArrayExtra("DATA"));
+                fragment = new DetailFragement();
+                fragment.setArguments(bundle);
+                break;
+            }
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment).commit();
+    }
+}

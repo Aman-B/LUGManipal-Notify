@@ -3,7 +3,6 @@ package chipset.lugmnotifier.provider;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Developer: chipset
@@ -29,7 +28,6 @@ public class MessageDbHelper extends SQLiteOpenHelper {
                 MessagesContract.MessagesEntry.COLUMN_DETAIL + " TEXT NOT NULL, " +
                 MessagesContract.MessagesEntry.COLUMN_IMAGE + " TEXT " + " );";
         db.execSQL(SQL_CREATE_MESSAGE_TABLE);
-        Log.i("TABLE", "CREATED");
     }
 
     @Override

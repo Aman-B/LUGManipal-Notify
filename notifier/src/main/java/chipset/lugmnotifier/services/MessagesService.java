@@ -3,7 +3,6 @@ package chipset.lugmnotifier.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -25,6 +24,7 @@ import static chipset.lugmnotifier.resources.Constants.KEY_TITLE;
  * Project : LUGMNotifier
  * Date : 10/3/15
  */
+
 public class MessagesService extends IntentService {
     String[] title = new String[1];
     String[] detail = new String[1];
@@ -36,7 +36,6 @@ public class MessagesService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("Service", "Running");
         final ContentValues values = new ContentValues();
         getContentResolver().delete(MessagesContract.BASE_CONTENT_URI, null, null);
         ParseQuery<ParseObject> query = ParseQuery.getQuery(KEY_CLASS_MESSAGES);
@@ -49,10 +48,9 @@ public class MessagesService extends IntentService {
                         title = new String[1];
                         detail = new String[1];
                         image = new String[1];
-                        title[0] = "Sorry";
-                        detail[0] = "No notifications";
+                        title[0] = "Sorry\nNo Notifications";
+                        detail[0] = "";
                         image[0] = "null";
-                        Log.i("EMP", "TY");
                     } else {
                         title = new String[parseObjects.size()];
                         detail = new String[parseObjects.size()];
@@ -73,6 +71,5 @@ public class MessagesService extends IntentService {
             }
         });
 
-        Log.d("Service", "Bye");
     }
 }

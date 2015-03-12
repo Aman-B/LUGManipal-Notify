@@ -18,7 +18,7 @@ import com.parse.ParseUser;
 
 import chipset.lugmnotifier.R;
 import chipset.lugmnotifier.activites.AdminActivity;
-import chipset.lugmnotifier.resources.Functions;
+import chipset.lugmnotifier.resources.Utils;
 
 /**
  * Developer: chipset
@@ -29,7 +29,7 @@ import chipset.lugmnotifier.resources.Functions;
 public class LoginFragment extends Fragment {
     Button loginButton, cancelButton;
     EditText passwordEditText;
-    Functions functions = new Functions();
+    Utils utils = new Utils();
     Activity activity;
 
 
@@ -55,7 +55,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 progressDialog.setMessage("Please Wait...");
                 passwordEditText.setError(null);
-                if (functions.isConnected(view.getContext())) {
+                if (utils.isConnected(view.getContext())) {
                     progressDialog.show();
                     String password = passwordEditText.getText().toString();
                     if (!password.isEmpty()) {

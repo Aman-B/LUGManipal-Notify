@@ -12,7 +12,7 @@ import android.widget.Button;
 import com.nispok.snackbar.Snackbar;
 
 import chipset.lugmnotifier.R;
-import chipset.lugmnotifier.resources.Functions;
+import chipset.lugmnotifier.resources.Utils;
 
 import static chipset.lugmnotifier.resources.Constants.APP_PACKAGE;
 import static chipset.lugmnotifier.resources.Constants.APP_VERSION;
@@ -27,7 +27,7 @@ import static chipset.lugmnotifier.resources.Constants.URL_PLAY_STORE;
  */
 public class AboutFragment extends Fragment {
     Button githubButton, rnrButton, sugButton, okButton;
-    Functions functions = new Functions();
+    Utils utils = new Utils();
     Activity activity;
 
 
@@ -50,8 +50,8 @@ public class AboutFragment extends Fragment {
         githubButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (functions.isConnected(view.getContext())) {
-                    functions.browserIntent(view.getContext(), URL_GITHUB);
+                if (utils.isConnected(view.getContext())) {
+                    utils.browserIntent(view.getContext(), URL_GITHUB);
                 } else {
                     Snackbar.with(view.getContext()) // context
                             .text("No Internet Connection") // text to display
@@ -63,8 +63,8 @@ public class AboutFragment extends Fragment {
         rnrButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (functions.isConnected(view.getContext())) {
-                    functions.browserIntent(view.getContext(), URL_PLAY_STORE);
+                if (utils.isConnected(view.getContext())) {
+                    utils.browserIntent(view.getContext(), URL_PLAY_STORE);
                 } else {
                     Snackbar.with(view.getContext()) // context
                             .text("No Internet Connection") // text to display
@@ -76,9 +76,9 @@ public class AboutFragment extends Fragment {
         sugButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (functions.isConnected(view.getContext())) {
+                if (utils.isConnected(view.getContext())) {
                     String body = "Device: " + Build.MANUFACTURER + " " + Build.BRAND + " " + Build.DEVICE + " " + Build.MODEL + "\nApp Version: " + APP_VERSION + "\nApp Package: " + APP_PACKAGE;
-                    functions.emailIntent(view.getContext(), "chipset95@gmail.com", "App Suggestion : LUG Manipal", body);
+                    utils.emailIntent(view.getContext(), "chipset95@gmail.com", "App Suggestion : LUG Manipal", body);
                 } else {
                     Snackbar.with(view.getContext()) // context
                             .text("No Internet Connection") // text to display

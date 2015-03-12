@@ -1,12 +1,12 @@
 package chipset.lugmnotifier.activites;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -18,7 +18,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,12 +33,11 @@ import chipset.lugmnotifier.R;
 import chipset.lugmnotifier.adapters.NotificationListViewAdapter;
 import chipset.lugmnotifier.fragments.DetailFragement;
 import chipset.lugmnotifier.provider.MessagesContract;
-import chipset.lugmnotifier.resources.Functions;
+import chipset.lugmnotifier.resources.Utils;
 import chipset.lugmnotifier.services.MessagesService;
 
 import static chipset.lugmnotifier.resources.Constants.EMAIL_MAILING;
 import static chipset.lugmnotifier.resources.Constants.KEY_SHOW;
-import static chipset.lugmnotifier.resources.Constants.KEY_TITLE;
 import static chipset.lugmnotifier.resources.Constants.URL_CORE_COMM;
 import static chipset.lugmnotifier.resources.Constants.URL_FB_GROUP;
 import static chipset.lugmnotifier.resources.Constants.URL_FB_PAGE;
@@ -61,10 +59,9 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
     ListView notificationListView, drawerListView;
     SwipeRefreshLayout notificationSwipeRefreshLayout;
     ProgressBar notificationLoadingProgressBar;
-    Functions functions = new Functions();
+    Utils utils = new Utils();
     boolean flag = false;
     boolean isPort;
-    String value;
     private int mPosition = ListView.INVALID_POSITION;
     NotificationListViewAdapter mAdapter;
     Bundle mBundle;
@@ -103,18 +100,8 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
         }
         try {
             flag = getIntent().getExtras().getBoolean(KEY_SHOW);
-            value = getIntent().getExtras().getString(KEY_TITLE);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (flag) {
-            flag = false;
-            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-            builder.setTitle(mAdapter.getCursor().getString(1));
-            builder.setMessage(mAdapter.getCursor().getString(2));
-            builder.setPositiveButton(android.R.string.ok, null);
-            builder.create();
-            builder.show();
         }
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             isPort = true;
@@ -133,7 +120,6 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
         notificationSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d("onRefresh", "Called");
                 new FetchData().getNotifications();
             }
         });
@@ -148,14 +134,7 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
                 if (isPort) {
                     startActivity(new Intent(HomeActivity.this, DialogActivity.class).putExtra("Fragment", 2).putExtra("DATA", data));
                 } else {
-                    Fragment fragment = new DetailFragement();
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArray("DATA", data);
-                    fragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.replace_frame, fragment).commit();
-
+                    changeFragment(data);
                 }
             }
         });
@@ -165,31 +144,31 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0: {
-                        functions.browserIntent(getApplicationContext(), URL_GITHUB_ORG);
+                        utils.browserIntent(getApplicationContext(), URL_GITHUB_ORG);
                         break;
                     }
                     case 1: {
-                        functions.browserIntent(getApplicationContext(), URL_FB_PAGE);
+                        utils.browserIntent(getApplicationContext(), URL_FB_PAGE);
                         break;
                     }
                     case 2: {
-                        functions.browserIntent(getApplicationContext(), URL_FB_GROUP);
+                        utils.browserIntent(getApplicationContext(), URL_FB_GROUP);
                         break;
                     }
                     case 3: {
-                        functions.browserIntent(getApplicationContext(), URL_TW_HANDLER);
+                        utils.browserIntent(getApplicationContext(), URL_TW_HANDLER);
                         break;
                     }
                     case 4: {
-                        functions.browserIntent(getApplicationContext(), URL_WEBSITE);
+                        utils.browserIntent(getApplicationContext(), URL_WEBSITE);
                         break;
                     }
                     case 5: {
-                        functions.browserIntent(getApplicationContext(), URL_CORE_COMM);
+                        utils.browserIntent(getApplicationContext(), URL_CORE_COMM);
                         break;
                     }
                     case 6: {
-                        functions.emailIntent(getApplicationContext(), EMAIL_MAILING, "", "\n\n\n\nSent from LUG Manipal Android App");
+                        utils.emailIntent(getApplicationContext(), EMAIL_MAILING, "", "\n\n\n\nSent from LUG Manipal Android App");
                         break;
                     }
                 }
@@ -200,12 +179,10 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
     public class FetchData {
         public void getNotifications() {
             notificationSwipeRefreshLayout.setRefreshing(true);
-            if (functions.isConnected(getApplicationContext())) {
+            if (utils.isConnected(getApplicationContext())) {
                 notificationLoadingProgressBar.setVisibility(View.GONE);
-                Log.d("onRefresh", "true");
                 startService(new Intent(HomeActivity.this, MessagesService.class));
             } else {
-                Log.d("onRefresh", "failed");
                 notificationLoadingProgressBar.setVisibility(View.GONE);
                 notificationSwipeRefreshLayout.setRefreshing(false);
                 Snackbar.with(getApplicationContext()) // context
@@ -229,12 +206,6 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
             outState.putInt("SELECTED_KEY", mPosition);
         }
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onResume() {
-        getWindow().getDecorView().findViewById(android.R.id.content).setSaveEnabled(false);
-        super.onResume();
     }
 
     @Override
@@ -290,10 +261,39 @@ public class HomeActivity extends ActionBarActivity implements LoaderCallbacks<C
         notificationListView.setAdapter(mAdapter);
         notificationListView.setVisibility(View.VISIBLE);
         notificationSwipeRefreshLayout.setRefreshing(false);
-        Log.d("onLoad", "check");
+        if (flag) {
+            flag = false;
+            try {
+                Cursor cursor = mAdapter.getCursor();
+                cursor.moveToPosition(0);
+                final String datum[] = {cursor.getString(1), cursor.getString(2), cursor.getString(3)};
+                if (isPort) {
+                    startActivity(new Intent(HomeActivity.this, DialogActivity.class).putExtra("Fragment", 2).putExtra("DATA", datum));
+                } else {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            changeFragment(datum);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    private void changeFragment(String[] data) {
+        Fragment fragment = new DetailFragement();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("DATA", data);
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.replace_frame, fragment).commit();
     }
 }

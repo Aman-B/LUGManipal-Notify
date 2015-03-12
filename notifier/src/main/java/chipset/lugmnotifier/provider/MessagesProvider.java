@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * Developer: chipset
@@ -52,10 +51,6 @@ public class MessagesProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int rowsDeleted = db.delete(MessagesContract.MessagesEntry.TABLE_NAME, selection, selectionArgs);
-//        if (selection == null || rowsDeleted != 0) {
-//            getContext().getContentResolver().notifyChange(uri, null);
-//        }
-        Log.i("DEL", rowsDeleted + "");
         return rowsDeleted;
     }
 

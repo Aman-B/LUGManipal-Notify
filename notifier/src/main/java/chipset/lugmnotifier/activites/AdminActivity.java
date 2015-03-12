@@ -17,7 +17,7 @@ import com.parse.SaveCallback;
 import com.parse.SendCallback;
 
 import chipset.lugmnotifier.R;
-import chipset.lugmnotifier.resources.Functions;
+import chipset.lugmnotifier.resources.Utils;
 
 import static chipset.lugmnotifier.resources.Constants.KEY_CLASS_MESSAGES;
 import static chipset.lugmnotifier.resources.Constants.KEY_DETAIL;
@@ -30,7 +30,7 @@ public class AdminActivity extends ActionBarActivity {
     String title, detail, image;
     Button sendPushButton;
     EditText pushNotificationTitleEditText, pushNotificationDetailEditText, pushNotificationImageEditText;
-    Functions functions = new Functions();
+    Utils utils = new Utils();
     ProgressDialog progressDialog;
     Toolbar toolbar;
 
@@ -52,7 +52,7 @@ public class AdminActivity extends ActionBarActivity {
         sendPushButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (functions.isConnected(getApplicationContext())) {
+                if (utils.isConnected(getApplicationContext())) {
                     title = pushNotificationTitleEditText.getText().toString();
                     detail = pushNotificationDetailEditText.getText().toString();
                     image = pushNotificationImageEditText.getText().toString();

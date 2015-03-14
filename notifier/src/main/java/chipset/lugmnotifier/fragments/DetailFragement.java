@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import chipset.lugmnotifier.R;
@@ -23,6 +25,7 @@ public class DetailFragement extends Fragment {
     String[] data;
     TextView notificationTitleTextView, notificationDetailTextView;
     ImageView notificationImageView;
+    ProgressBar mProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,11 +42,23 @@ public class DetailFragement extends Fragment {
         notificationTitleTextView = (TextView) view.findViewById(R.id.notificationTitleTextView);
         notificationDetailTextView = (TextView) view.findViewById(R.id.notificationDetailTextView);
         notificationImageView = (ImageView) view.findViewById(R.id.notificationImageView);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.notification_progress_bar);
         notificationTitleTextView.setText(data[0]);
         notificationDetailTextView.setText(data[1]);
         if (!data[2].equals("null")) {
-            notificationImageView.setVisibility(View.VISIBLE);
-            Picasso.with(view.getContext()).load(data[2]).placeholder(view.getContext().getResources().getDrawable(R.drawable.ic_launcher)).into(notificationImageView);
+            Picasso.with(view.getContext()).load(data[2]).into(notificationImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    notificationImageView.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
+                }
+                @Override
+                public void onError() {
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 }

@@ -11,12 +11,11 @@ import chipset.lugmnotifier.BuildConfig;
  **/
 public class Constants {
 
-    public static String APPLICATION_ID = APPLICATION_ID;
-    public static String CLIENT_KEY = CLIENT_KEY;
+    public static String APPLICATION_ID = "NRru7ffg73fbqucVLtr8ZpNJAIK40wAt4oTcebGJ";
+    public static String CLIENT_KEY = "HCoVVraDkFhRgd0avILbgGAeQFfggiXX0iUIp80e";
 
     public static String KEY_TITLE = "title";
     public static String KEY_IMAGE = "image";
-    public static String KEY_CLASS_NOTIFICATION = "Notifications";
     public static String KEY_CLASS_MESSAGES = "Messages";
     public static String KEY_DETAIL = "detail";
     public static String KEY_SHOW = "show";

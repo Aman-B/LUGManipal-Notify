@@ -1,3 +1,6 @@
+# DO NOT USE THIS GIT IGNORE FOR OTHER PROJECTS
+# THIS DOES NOT IGNORE APK AND AP_ FILES
+
 # OS generated files #
 ######################
 .DS_Store
@@ -10,8 +13,6 @@ ehthumbs.db
 Thumbs.db
 
 # built application files
-*.apk
-*.ap_
 
 # files for the dex VM
 *.dex
